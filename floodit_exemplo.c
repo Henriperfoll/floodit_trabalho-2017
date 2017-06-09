@@ -104,8 +104,6 @@ int main(int argc, char **argv) {
     //exit(1);
   }
 
-  //carrega_mapa(&m);
-
   m.nlinhas = 4;
   m.ncolunas = 4;
   m.ncores = 3;
