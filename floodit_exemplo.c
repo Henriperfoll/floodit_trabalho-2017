@@ -115,7 +115,7 @@ int main(int argc, char **argv) {
   else
     semente = -1;
   gera_mapa(&m, semente);
-  mostra_mapa_cor(&m);
+  mostra_mapa(&m);
 
   scanf("%d", &cor);
   while(cor > 0 && cor <= m.ncores) {
