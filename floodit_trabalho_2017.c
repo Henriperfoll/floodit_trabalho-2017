@@ -79,6 +79,28 @@ int verifica(tmapa *m, int l, int c, int fundo, int parede, int cor){
     return 1;
 }
 
+int verifica_R(tmapa *m, int l, int c, int fundo, int parede, int cor){
+    int x,z;
+    if(m->mapa[l][c] != cor){
+        printf("\n--->%d<---",m->mapa[l][c]);
+        m->mapa[l][c] = -1;
+        return -1;
+    }
+    if((l+1) < parede && m->mapa[l+1][c] != -1)
+        x = verifica_R(m,l+1,c,fundo,parede,cor);
+    if((c+1) < fundo && m->mapa[l][c+1] != -1)
+        z = verifica_R(m,l,c+1,fundo,parede,cor);
+    if(x+z < 0)
+        return -1;
+    return 0;
+}
+
+int verifica_borda(tmapa m){
+    tmapa x;
+    x = m;
+    return verifica_R(&x,0,0,x.nlinhas,x.ncolunas,x.mapa[0][0]);
+}
+
 int verifica_mapa(tmapa *m){
     int cor;
     cor = m->mapa[0][0];
@@ -103,9 +125,9 @@ int main(int argc, char **argv) {
     do{
         mostra_mapa(&m);
         //verificou = verifica_mapa(&m);
-        //printf("\n%d\n",verificou);
         cor = pergunta_cor();
         pinta_mapa(&m, cor);
+        printf("\n# %d #\n",verifica_borda(m));
     }while(cor > 0 && cor <= m.ncores && (verifica_mapa(&m) < 0));
 
     mostra_mapa(&m);
