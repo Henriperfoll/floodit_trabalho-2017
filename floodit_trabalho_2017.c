@@ -14,14 +14,18 @@ typedef struct {
   int **mapa;
 } tmapa;
 
+//estrutura da borda
 typedef struct celula{
+    //a linha e a coluna são armazenados para repintar a matriz pois ela é pintada para não passar duas vezes na mesma celula recursivamente
     int linha;
     int coluna;
     int cor;
     struct celula *prox;
 };
 
+//estrutura das jogadas
 typedef struct play{
+    //armazena a jogada realizada
     int cor;
     struct play *prox;
 };
@@ -29,6 +33,8 @@ typedef struct play{
 typedef struct celula borda;
 typedef struct play jogada;
 
+
+//gera o mapa aleatoriamente se jogar na versão manual
 void gera_mapa(tmapa *m, int semente) {
   int i, j;
 
@@ -44,6 +50,7 @@ void gera_mapa(tmapa *m, int semente) {
   }
 }
 
+//imprime o mapa, junto a suas dimenções
 void mostra_mapa(tmapa *m) {
   int i, j;
 
@@ -58,6 +65,7 @@ void mostra_mapa(tmapa *m) {
   }
 }
 
+//pinta o mapa com uma cor
 void pinta(tmapa *m, int l, int c, int fundo, int cor) {
   m->mapa[l][c] = cor;
   if(l < m->nlinhas - 1 && m->mapa[l+1][c] == fundo)
@@ -69,13 +77,13 @@ void pinta(tmapa *m, int l, int c, int fundo, int cor) {
   if(c > 0 && m->mapa[l][c-1] == fundo)
     pinta(m, l, c-1, fundo, cor);
 }
-
 void pinta_mapa(tmapa *m, int cor) {
   if(cor == m->mapa[0][0])
     return;
   pinta(m, 0, 0, m->mapa[0][0], cor);
 }
 
+//função para perguntar a cor da proxima jogada ao usuario
 int pergunta_cor(){
     int x;
     printf("Digite uma cor:");
@@ -83,6 +91,7 @@ int pergunta_cor(){
     return x;
 }
 
+//função para inserir uma das celulas da borda
 void insere_borda(int x,int l,int c, borda *p){
    borda *nova;
    nova = malloc(sizeof (borda));
@@ -93,6 +102,7 @@ void insere_borda(int x,int l,int c, borda *p){
    p->prox = nova;
 }
 
+//função para inserir jogadas
 void insere_jogada(int x, jogada *p){
    jogada *nova;
    nova = malloc(sizeof (jogada));
@@ -101,6 +111,7 @@ void insere_jogada(int x, jogada *p){
    p->prox = nova;
 }
 
+//imprime os valores das celulas contidas na borda
 void imprime_borda (borda *le) {
    borda *p;
    int x;
@@ -109,6 +120,7 @@ void imprime_borda (borda *le) {
    }
 }
 
+//imprime as jogadas realizadas
 void imprime_jogadas (jogada *le) {
    jogada *p;
    for (p = le->prox; p != NULL; p = p->prox){
@@ -116,6 +128,7 @@ void imprime_jogadas (jogada *le) {
    }
 }
 
+//remove um item da borda
 void remove_borda(borda *p)
 {
    borda *lixo;
@@ -123,13 +136,14 @@ void remove_borda(borda *p)
    p->prox = lixo->prox;
    free (lixo);
 }
-
+//remove todos os itens da borda
 void remove_tudo_borda(borda *p){
    while (p->prox != NULL){
         remove_borda(p);
    }
 }
 
+//remove uma jogada
 void remove_jogada(jogada *p)
 {
    jogada *lixo;
@@ -137,13 +151,14 @@ void remove_jogada(jogada *p)
    p->prox = lixo->prox;
    free (lixo);
 }
-
+//remove todas as jogadas
 void remove_todas_jogadas(jogada *p){
    while (p->prox != NULL){
         remove_borda(p);
    }
 }
 
+//verifica recursivamente a matriz procurando se há borda e a pinta com -1 e insere a celula na borda
 int verifica_R(tmapa *m, int l, int c, int cor, borda *b){
     int x,z;
     if(m->mapa[l][c] != cor){
@@ -159,7 +174,7 @@ int verifica_R(tmapa *m, int l, int c, int cor, borda *b){
         return -1;
     return 0;
 }
-
+//verifica a borda
 int verifica_borda(tmapa *m, borda *b){
     tmapa *x = NULL;
     remove_tudo_borda(b);
@@ -167,6 +182,7 @@ int verifica_borda(tmapa *m, borda *b){
     return 0;
 }
 
+//função que conta a quantidade de cada cor na borda e também volta a matriz ao padrão
 void quantidade_borda(tmapa *m, borda *b, int *qtd){
     int quantidade[m->ncores],i,maior;
     maior = 0;
@@ -180,6 +196,7 @@ void quantidade_borda(tmapa *m, borda *b, int *qtd){
     }
 }
 
+//ajusta a prioridade das cores para as proximas jogadas e atualizando a prioridade para o menor valor da cor que já foi jogada
 void ajusta_prioridades(int *prior, int jogado, int tam){
     int i;
     for (i=0;i<tam;i++){
@@ -191,6 +208,7 @@ void ajusta_prioridades(int *prior, int jogado, int tam){
     }
 }
 
+//decide a cor da proxima jogada com base na quantidade que existe na borda e no vetor de prioridade
 int proxima_jogada(int *prior,int *qtd,int tam){
     int jogada,i;
     jogada = 0;
@@ -202,6 +220,7 @@ int proxima_jogada(int *prior,int *qtd,int tam){
     return jogada+1;
 }
 
+//função que grava as jogadas no arquivo texto
 int grava_jogadas(int qtd_jogadas,jogada *jogadas){
     FILE *ptr_file;
     int x;
@@ -220,6 +239,7 @@ int grava_jogadas(int qtd_jogadas,jogada *jogadas){
     return  0;
 }
 
+//carrega o mapa de acordo no arquivo texto mapa_floodit.txt
 int carrega_mapa_arquivo(tmapa *m){
     FILE* f = fopen("mapa_floodit.txt", "r");
     int j,i;
@@ -236,6 +256,7 @@ int carrega_mapa_arquivo(tmapa *m){
     fclose(f);
 }
 
+//função para jogar manualmente o jogo
 void jogar_manualmente(){
     int cor,semente, i, jogada;
     tmapa m;
@@ -273,6 +294,7 @@ void jogar_manualmente(){
     mostra_mapa(&m);
 }
 
+//função que faz pelo arquivo de maneira automatica
 int jogar_pelo_arquivo(){
     tmapa m;
     carrega_mapa_arquivo(&m);

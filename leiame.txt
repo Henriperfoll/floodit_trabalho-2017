@@ -1,0 +1,19 @@
+Trabalho de 2017 da matéria de algoritmos mestrado PPGInf UFPR
+Aluno: Henrique Perfoll Neto
+E-mail: hperfoll@gmail.com
+
+Neste trabalho toda a implementação ficou no arquivo floodit_trabalho_2017.c,
+nele utilizei a estratégia de pintura onde analiso a borda do tabuleiro e pinto
+de acordo com a cor que mais aparece, mas conforme vou pintando o nível de priori-
+dade das demais cores aumenta, sendo assim não é apenas o fator da quantidade de cores
+que influencia a proxima jogada, porém também o tanto de vezes sequidas que a determinada
+cor não foi jogada.
+
+Ao iniciar a aplicação terá a opção de jogar manualmente ou deixar o jogo seguir através
+do arquivo .txt com o nome 'mapa_floodit', se não houver o arquivo o programa não segue,
+após finalizar as jogadas o resultado será apresentado na tela e também será gravado no
+arquivo 'floodit_jogadas.txt' conforme especificado.
+
+Para estre trabalho foram criadas duas estruturas extras, a lista encadeada que armazena
+a borda e outra lista que contem as jogadas realizadas para ser gravada no arquivo no 
+final.
